@@ -1,0 +1,42 @@
+from flask import Flask, render_template, abort
+from markdown2 import markdown
+from os import listdir, path
+
+app = Flask(__name__)
+
+POST_DIR = "posts"
+
+def get_post_list():
+    files = [f[:-3] for f in listdir(POST_DIR) if f.endswith(".md")]
+    return sorted(files)
+
+def load_post(slug):
+    filepath = path.join(POST_DIR, f"{slug}.md")
+    if not path.isfile(filepath):
+        return None
+    with open(filepath, "r", encoding="utf-8") as f:
+        md_content = f.read()
+    html = markdown(md_content, extras=["fenced-code-blocks", "tables"])
+    return html
+
+@app.route("/")
+def index():
+    posts = get_post_list()
+    return render_template("index.html", posts=posts)
+
+@app.route("/post/<slug>")
+def post(slug):
+    posts = get_post_list()  # so sidebar works on all pages
+    content = load_post(slug)
+    if content is None:
+        abort(404)
+    return render_template("post.html", content=content, posts=posts, title=slug)
+
+@app.route("/about")
+def about():
+    posts = get_post_list()
+    return render_template("about.html", posts=posts, title="About me")
+
+if __name__ == "__main__":
+    print("running without wsgi!")
+    app.run()
