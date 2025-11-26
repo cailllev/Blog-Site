@@ -1,18 +1,21 @@
-# Blog-Site
-my simple markdown blog website
+# Mandatory First Post
+Finally, I took 1h to create a simple markdown blog website.<br>
+*Now there should be no excuses left to not document something.*<br>
+Anyhow, this is how you can replicate this if you want:
 
 ## Setup
-1. install dependencies
+### install dependencies
 ```bash
-apt install gunicorn python3-markdown2
+apt install gunicorn python3-markdown python3-markdown2
 ```
 
-2. setup project structure
+### setup project structure
 ```bash
 mkdir wwwroot
 mkdir wwwroot/posts
 mkdir wwwroot/templates
 ```
+
 ```
 wwwroot/
 ├── app.py
@@ -25,10 +28,11 @@ wwwroot/
     └── post.html
 ```
 
-3. setup service
+### setup service
 ```bash
 nano /etc/systemd/system/blog-site.service
 ```
+
 ```bash
 [Unit]
 Description=My Blog-Site
@@ -44,6 +48,7 @@ Restart=on-failure
 [Install]
 WantedBy=multi-user.target
 ```
+
 ```bash
 systemctl daemon-reload
 systemctl enable blog-site.service
@@ -51,9 +56,14 @@ systemctl start blog-site.service
 systemctl status blog-site.service
 ```
 
-4. setup Cloudflare reverse proxy
+### setup Cloudflare reverse proxy
 - buy a domain name
 - create a cloudflare tunnel, set cloudflare as DNS provider (TODO how to)
 - go to cloudflare > networks > connectors, select your tunnel > edit
 - go to Published application routes > add a published application route
-`blog.your.domain -> http://localhost:9004`
+```
+blog.your.domain -> http://localhost:9004
+```
+
+## Disclaimer
+The initial structure was <s>surely not</s> built by AI. Ain't noone got time to write HTML and CSS nomore.

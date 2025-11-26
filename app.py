@@ -1,10 +1,18 @@
+from datetime import datetime
 from flask import Flask, render_template, abort
 from markdown2 import markdown
 from os import listdir, path
+from zoneinfo import ZoneInfo
+
 
 app = Flask(__name__)
-
 POST_DIR = "posts"
+
+
+@app.context_processor
+def inject_now():
+    now = datetime.now(ZoneInfo("Europe/Zurich")).strftime("%Y-%m-%d %H:%M %Z")
+    return {"now": now}
 
 def get_post_list():
     files = [f[:-3] for f in listdir(POST_DIR) if f.endswith(".md")]
@@ -39,4 +47,4 @@ def about():
 
 if __name__ == "__main__":
     print("running without wsgi!")
-    app.run()
+    app.run("0.0.0.0", 9004)
