@@ -34,7 +34,20 @@ def load_post(slug):
 @app.route("/")
 def index():
     posts = get_post_list()
-    return render_template("index.html", posts=posts)
+    posts_dict = {}
+    for p in posts:
+        if "-" not in p:
+            continue # invalid name
+        link = p
+        year = p.split("-")[0]
+        title = " ".join([p.capitalize() for p in (p.split("-")[3:])]) # uppercase everything after 20xx-xx-xx
+        print(year, title)
+        if year in posts_dict:
+            posts_dict[year].append((title, link))
+        else:
+            posts_dict[year] = [(title, link)]
+    print(posts_dict)
+    return render_template("index.html", posts=posts, posts_dict=posts_dict)
 
 @app.route("/post/<slug>")
 def post(slug):
