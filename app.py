@@ -2,11 +2,15 @@ from datetime import datetime
 from flask import Flask, render_template, abort
 from markdown2 import markdown
 from os import listdir, path
+from pygments.formatters import HtmlFormatter
+
 from zoneinfo import ZoneInfo
 
 
 app = Flask(__name__)
 POST_DIR = "posts"
+PYGMENTS_CSS = HtmlFormatter(style="monokai").get_style_defs('.codehilite')
+# more styles here: https://dt.iki.fi/pygments-gallery
 
 
 @app.context_processor
@@ -16,7 +20,7 @@ def inject_now():
 
 def get_post_list():
     files = [f[:-3] for f in listdir(POST_DIR) if f.endswith(".md")]
-    return sorted(files)
+    return sorted(files, reverse=True)
 
 def load_post(slug):
     filepath = path.join(POST_DIR, f"{slug}.md")
@@ -24,7 +28,7 @@ def load_post(slug):
         return None
     with open(filepath, "r", encoding="utf-8") as f:
         md_content = f.read()
-    html = markdown(md_content, extras=["fenced-code-blocks", "tables"])
+    html = markdown(md_content, extras=["fenced-code-blocks", "pygments"])
     return html
 
 @app.route("/")
@@ -38,7 +42,7 @@ def post(slug):
     content = load_post(slug)
     if content is None:
         abort(404)
-    return render_template("post.html", content=content, posts=posts, title=slug)
+    return render_template("post.html", content=content, posts=posts, title=slug, pygments_css=PYGMENTS_CSS)
 
 @app.route("/about")
 def about():

@@ -2,27 +2,35 @@
 my simple markdown blog website
 
 ## Setup
-1. install dependencies
+1. install dependencies (tested on Debian 12)
 ```bash
-apt install gunicorn python3-markdown2
+apt install gunicorn
+apt install python3-venv
+python3 -m venv venv
+source venv/bin/activate
+pip install --upgrade markdown2 pygments flask gunicorn
+deactivate
 ```
 
 2. setup project structure
 ```bash
-mkdir wwwroot
-mkdir wwwroot/posts
-mkdir wwwroot/templates
+mkdir Blog-Site
+mkdir Blog-Site/posts
+mkdir Blog-Site/static
+mkdir Blog-Site/templates
 ```
 ```
-wwwroot/
+Blog-Site/
 ├── app.py
 ├── posts/
 │   ├── first-post.md
 │   └── another-post.md
-└── templates/
-    ├── base.html
-    ├── index.html
-    └── post.html
+├── templates/
+│   ├── base.html
+│   ├── index.html
+│   └── post.html
+└── static/
+    └── images.png
 ```
 
 3. setup service
@@ -36,7 +44,8 @@ Description=My Blog-Site
 [Service]
 Type=simple
 User=web
-ExecStart=/bin/bash /opt/Blog-Site/start_server.sh
+Environment="PATH=/opt/Blog-Site/venv/bin"
+ExecStart=/opt/Blog-Site/venv/bin/gunicorn -b 0.0.0.0:9004 -w 1 app:app
 WorkingDirectory=/opt/Blog-Site
 Restart=on-failure
 
