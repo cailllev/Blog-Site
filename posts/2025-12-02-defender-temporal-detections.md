@@ -4,8 +4,12 @@ While playing around with attacks and bypasses for my [EDRi](https://github.com/
 Defender for Individuals (and MDE) appear to store “known bad” behavior of processes and classify further executions of similar attacks the same, meaning other bypass strategies of the same attack are classified just as the first attack variant.
 <br><br>
 Conversely, the inverse also seems to hold. Non-malicious behaviour is also stored temporarily, presumably to increase system performance. Shortly after the initial successful attack with the deconditioning strategy, the standard (null) strategy also works.
-<br><br>
-*In the following tests the \EDR-Introspection\ folder is excluded from Defender, meaning known bad files are not deleted after detection, and only malicious behaviour at runtime is blocked, not the initial execution.
+<br>
+
+## Notes
+1) In the following tests the \EDR-Introspection\ folder is excluded from Defender, meaning known bad files are not deleted after detection, and only malicious behaviour at runtime is blocked, not the initial execution.
+<br>2) The source code for the tests is available here [EDRi/attacks/LsassReader](https://github.com/cailllev/EDR-Introspection/blob/4eb8966fd3a23752b078f4f6724aa4a83caff140/attacks/LsassReader/read-lsass.cpp)
+<br>3) standard.exe means no bypasses, deconditioning.exe uses string-obfuscation, anti-emulation and deconditioning (by dumping non critical processes first)
 
 ## Tests
 ![LsassReader deconditioning works](/static/defender-temporal-detections/LsassReader-deconditioning-works.png)
@@ -15,7 +19,7 @@ Conversely, the inverse also seems to hold. Non-malicious behaviour is also stor
 <br><i>Now the LsassReader-standard.exe also does not raise behavioural alerts.</i>
 
 <br>
-Only after LsassReader-standard.exe raises an alert (1), future executions of the standard strategy are behaviourally detected and blocked. It can be seen that the file hash matches (2), and when the standard variant is executed (3), the system eventually hangs before the attack is able to dump the lsass process (4). The system hang can also be seen by the large time difference - 20 seconds instead of 5 seconds - marked in the red square top left.
+Only after LsassReader-standard.exe raises an alert, for example by copying it to a non-excluded directory (1), future executions of the standard strategy are behaviourally detected and blocked. The file hash still matches (2). When the standard variant is executed *now* (3), the system eventually hangs before the attack is able to dump the lsass process (4). The system hang can also be seen by the large time difference - 20 seconds instead of 5 seconds - marked in the red square top left.
 <br>![LsassReader standard detected](/static/defender-temporal-detections/LsassReader-standard-detected.png)
 <br><i>After a triggered alert, the temporal behavioral detections are reset for LsassReader-(x).exe.</i>
 
