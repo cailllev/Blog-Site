@@ -33,7 +33,7 @@ wwwroot/
 nano /etc/systemd/system/blog-site.service
 ```
 
-```bash
+```
 [Unit]
 Description=My Blog-Site
 
@@ -67,3 +67,19 @@ blog.your.domain -> http://localhost:9004
 
 ## Disclaimer
 The initial structure was <s>surely not</s> built by AI. Ain't noone got time to write HTML and CSS nomore.
+
+## Result
+A simple blog website with code syntax highlighting, without any .js <s>f js</s>
+
+```python3
+def test():
+    print("abcd" + 123)
+    return 1
+```
+
+```cpp
+int main(int argc, char[] argv) {
+    int a = 2;
+    std::cout << "test" << argv[a] << "\n";
+}
+```
