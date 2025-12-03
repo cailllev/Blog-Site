@@ -62,7 +62,7 @@ systemctl status blog-site.service
 
 4. setup Cloudflare reverse proxy
 - buy a domain name
-- create a cloudflare tunnel, set cloudflare as DNS provider (TODO how to)
+- create a [cloudflare tunnel](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/get-started/create-remote-tunnel/), set cloudflare as DNS provider
 - go to cloudflare > networks > connectors, select your tunnel > edit
-- go to Published application routes > add a published application route
-`blog.your.domain -> http://localhost:9004`
+- go to Published application routes > add a published application route > `blog.your.domain -> http://localhost:9004`
+- optional: disable [bot protection](https://developers.cloudflare.com/bots/get-started/bot-fight-mode/) (for true no-js site)
