@@ -18,9 +18,21 @@ def inject_now():
     now = datetime.now(ZoneInfo("Europe/Zurich")).strftime("%Y-%m-%d %H:%M %Z")
     return {"now": now}
 
-def get_post_list():
+def get_posts():
     files = [f[:-3] for f in listdir(POST_DIR) if f.endswith(".md")]
-    return sorted(files, reverse=True)
+    files = sorted(files, reverse=True)
+    posts_dict = {}
+    for p in files:
+        if "-" not in p:
+            continue # invalid name
+        link = p
+        year = p.split("-")[0]
+        title = " ".join([p.capitalize() for p in (p.split("-")[3:])]) # uppercase everything after 20xx-xx-xx
+        if year in posts_dict:
+            posts_dict[year].append((title, link))
+        else:
+            posts_dict[year] = [(title, link)]
+    return posts_dict
 
 def load_post(slug):
     filepath = path.join(POST_DIR, f"{slug}.md")
@@ -33,25 +45,12 @@ def load_post(slug):
 
 @app.route("/")
 def index():
-    posts = get_post_list()
-    posts_dict = {}
-    for p in posts:
-        if "-" not in p:
-            continue # invalid name
-        link = p
-        year = p.split("-")[0]
-        title = " ".join([p.capitalize() for p in (p.split("-")[3:])]) # uppercase everything after 20xx-xx-xx
-        print(year, title)
-        if year in posts_dict:
-            posts_dict[year].append((title, link))
-        else:
-            posts_dict[year] = [(title, link)]
-    print(posts_dict)
-    return render_template("index.html", posts=posts, posts_dict=posts_dict)
+    posts = get_posts()
+    return render_template("index.html", posts=posts)
 
 @app.route("/post/<slug>")
 def post(slug):
-    posts = get_post_list()  # so sidebar works on all pages
+    posts = get_posts()  # so sidebar works on all pages
     content = load_post(slug)
     if content is None:
         abort(404)

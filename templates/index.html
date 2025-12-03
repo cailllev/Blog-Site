@@ -3,8 +3,8 @@
 <h2>Latest Posts</h2>
 
 <p>Select a post to begin reading.</p>
-{% for year, titles in posts_dict.items()%}
-  <h3>{{ year }}:</h3>
+{% for year, titles in posts.items()%}
+  <h3>{{ year }}</h3>
   <ul>
     {% for title, link in titles %}
       <li><a href="/post/{{link}}">{{ title }}</a></li>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Random Blog</title>
+    <title>💀 Levi's Blog 💀</title>
 
     <style>
         {{ pygments_css|safe }} /* need to include for syntax highlights */
@@ -23,7 +23,7 @@
         /* sidebar */
         #sidebar {
             background: #111;
-            width: 400px;
+            width: 280px;
             padding: 20px;
             border-right: 1px solid #222;
             overflow-y: auto;
@@ -48,7 +48,6 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            //transition: margin-left 0.3s ease;
         }
 
         header {
@@ -65,9 +64,6 @@
             flex: 1;
             padding: 25px;
             overflow-y: auto;
-
-            max-width: 65vw;
-            //margin: 0 auto;
         }
 
         img {
@@ -96,11 +92,15 @@
 
 <body>
     <div id="sidebar">
-        <h2>☰ Posts</h2>
-        <ul>
-            {% for p in posts %}
-            <li><a href="/post/{{ p }}">{{ p }}</a></li>
-            {% endfor %}
+        <h2>☰ <a href="/">Posts</a></h2>
+          {% for year, titles in posts.items()%}
+            <h3>{{ year }}</h3>
+            <ul>
+              {% for title, link in titles %}
+                <li><a href="/post/{{link}}">{{ title }}</a></li>
+              {% endfor %}
+          </ul>
+          {% endfor %}
         </ul>
     </div>
 
@@ -114,12 +114,10 @@
         </main>
 
         <footer>
-            <strong>About me:</strong>  
             <a href="/about">$ whoami</a> ·  
-            <a href="https://github.com/cailllev">GitHub</a> ·  
-
+            <a href="https://github.com/cailllev">GitHub</a>
             <br><br>
-            <span style="opacity:0.5">Powered by Flask + Markdown — {{ now if now else "" }}</span>
+            <span style="opacity:0.5">Powered by Flask + Markdown2 — {{ now if now else "" }}</span>
         </footer>
     </div>
 </body>
