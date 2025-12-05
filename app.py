@@ -58,7 +58,7 @@ def post(slug):
 
 @app.route("/about")
 def about():
-    posts = get_post_list()
+    posts = get_posts()
     return render_template("about.html", posts=posts, title="About me")
 
 if __name__ == "__main__":
