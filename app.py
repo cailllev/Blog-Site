@@ -40,7 +40,7 @@ def load_post(slug):
         return None
     with open(filepath, "r", encoding="utf-8") as f:
         md_content = f.read()
-    html = markdown(md_content, extras=["fenced-code-blocks", "pygments"])
+    html = markdown(md_content, extras=["fenced-code-blocks", "pygments", "tables"])
     return html
 
 @app.route("/")

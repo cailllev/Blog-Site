@@ -9,7 +9,7 @@
 The following theory and pseudo-code is based on my and [Dobins](https://blog.deeb.ch) experience and exchange on the matter.
 
 ## Related Work
-If you don't know what a behavioural engine or behavioural tracking is, have a look at [Detection Engines](/posts/2025-12-05-defender-detection-engines) first.<br>
+If you don't know what a behavioural engine or behavioural tracking is, have a look at [Detection Engines](/post/2025-12-04-defender-detection-engines) first.<br>
 If you do not believe the results, see [Temporal Detections](/post/2025-12-02-defender-temporal-detections) where the observations stem from.<br>
 
 ## My Work
@@ -61,15 +61,15 @@ def behaviour_handler(event):
 
     # which behaviour rules are subscribed to this event, e.g. event open process -> lsass-dump
     rules = get_rules_based_on_event(event)
-    for r.name, r.trigger:
+    for r in rules:
         if cache[r.name][process_identity] == -1: # previously detected
             return true # ALERT!
 
         elif cache[r.name][process_identity]++ < cutoff:
-            detection = r.trigger(event)
-            if detection:
+            if r.trigger(event):
                 cache[r.name][process_identity] = -1 # store as known bad
                 return true # ALERT!
+            # else: rule checked but no suspicious action found, continue
 
 # example, "A.exe" opens a proc, but non malicious
 a_pi = PI("a.exe")
@@ -95,5 +95,30 @@ cache = {
 
 ## Further Research
 * Do the cache cutoffs depend on [rule] and [process_identity], or only on rule? It should depend on both, else A.exe can decondition the EDR, and EVERY proc on the system is now whitelisted for proc dumping.
-* Can the exact PI function be found? Is it really imphash? 
+* Can the exact PI function be found? Is it really imphash?
 * Find more rules besides this `anti_lsass_dump` and [C2 Loaders (SirAllocALot)](https://github.com/dobin/SuperMega?tab=readme-ov-file#anti-emulation) 
+
+### Decontitioner Project
+* May get more insights with dedicated [Deconditioner Enumerator](https://github.com/cailllev/Deconditioner-Enumerator)
+* see also the follow-up [blog post](/post/2025-12-06-decondition-enumerator)
+
+## Ammendments
+* The `PI(A.exe)` seems to be more complex. Further testing has revealed the following behaviour:
+  * A.exe was behaviourally detected at some point, meaning as soon as A.exe had a process handle open to lsass, all further dumps were blocked (also non-lsass procs).
+  * Only after changing an encrypted string (the outfile for the dump) <b>lsass could be dumped again</b>. Let's call this B.exe
+    * From this follows: `PI(B.exe) != PI(A.exe)`, else B.exe would also be blocked just as A'.exe, because `PI(A.exe) == PI(A'.exe)`
+  * But now all previous A.exe and A'.exe are <b>again able to dump lsass</b>.
+    * And from this follow: `PI(B.exe) == PI(A.exe)`, contradicting the earlier statement.
+  * This could mean there are different process identifier functions, or layers to it.
+    * Maybe the cutoffs are only per rule, and not per rule+PI. This could clear all known-bad PIs per rule, while still blocking similar exes as long as the cache was not cleared.
+```python
+    for r in rules:
+        if cache[r.name][process_identity] == -1: # previously detected
+            return true # ALERT!
+
+        elif cache[r.name]++ < cutoff: # instead of cache[r.name][process_identity]
+            if r.trigger(event):
+                cache[r.name][process_identity] = -1 # store as known bad
+                return true # ALERT!
+            # else: rule checked but no suspicious action found, continue
+```

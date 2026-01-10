@@ -58,18 +58,19 @@ systemctl status blog-site.service
 
 ### setup Cloudflare reverse proxy
 - buy a domain name
-- create a cloudflare tunnel, set cloudflare as DNS provider (TODO how to)
+- create a cloudflare tunnel, set cloudflare as DNS provider, see [here](https://developers.cloudflare.com/cloudflare-one/networks/connectors/cloudflare-tunnel/get-started/create-remote-tunnel/)
 - go to cloudflare > networks > connectors, select your tunnel > edit
-- go to Published application routes > add a published application route
+- go to Published application routes > add a published application route, example see below
 ```
 blog.your.domain -> http://localhost:9004
 ```
 
 ## Disclaimer
-The initial structure was <s>surely not</s> built by AI. Ain't noone got time to write HTML and CSS nomore.
+The initial structure was <s>surely not</s> built by AI. Ain't no one got time to write HTML and CSS nomore.
 
 ## Result
-A simple blog website with code syntax highlighting, without any .js <s>f js</s>
+A simple blog website with code syntax highlighting, without any JavaScript, f*ck JavaScript.<br>
+Also, it is quite fast. I hate websites that take more than 100ms to load.
 
 ```python3
 def test():

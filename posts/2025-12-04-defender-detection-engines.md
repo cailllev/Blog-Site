@@ -1,11 +1,11 @@
 # EDR Detection Engines
 
-Defender (and any modern EDR) have 4 different analysis engines, i.e. different mechanisms to catch your malware. <br>
-These are sparsely documented in [Microsoft Defender for Endpoint in Depth, p.23](https://www.amazon.com/Microsoft-Defender-Endpoint-Depth-organizations/dp/1804615463), as well as observed by maldev research.
+Defender (and any modern EDR) have 4 different analysis engines, i.e. different mechanisms to catch your malware: <b>Signature, Sandbox, Memory, Behaviour</b><br>
+These are sparsely documented in [Microsoft Defender for Endpoint in Depth, p.17](https://www.amazon.com/Microsoft-Defender-Endpoint-Depth-organizations/dp/1804615463), as well as observed by maldev research.
 
 ## Maldev Research
 - [Bubbles of Bane](https://blog.deeb.ch/posts/how-edr-works/#edr-detection) -> Signature, Memory, Behaviour
-- [A blueprint for evading EDR](https://vanmieghem.io/blueprint-for-evading-edr-in-2022/) -> techniques against the analysis engines
+- [A blueprint for evading EDR](https://vanmieghem.io/blueprint-for-evading-edr-in-2022/) -> techniques against (all) the analysis engines
 - [Bypassing Windows Defender Runtime Scanning](https://labs.withsecure.com/publications/bypassing-windows-defender-runtime-scanning) -> anti signature, anti memory scan
 - [Windows Defender Memory Scanning Evasion](https://www.bordergate.co.uk/windows-defender-memory-scanning-evasion/) -> anti memory scan
 
