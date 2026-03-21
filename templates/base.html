@@ -5,9 +5,13 @@
     <title>💀 Levi's Blog 💀</title>
 
     <style>
-        {{ pygments_css|safe }} /* need to include for syntax highlights */
+        {{ pygments_css|safe }}
 
-        /* === minimalist hacker theme === */
+        /* === Global Reset & Hacker Theme === */
+        * {
+            box-sizing: border-box; /* Prevents padding from breaking widths */
+        }
+
         body {
             margin: 0;
             font-family: "Fira Code", "Courier New", monospace;
@@ -15,101 +19,118 @@
             color: #d0ffd0;
             display: flex;
             height: 100vh;
+            overflow: hidden; /* Prevents body scroll, use #main scroll instead */
         }
 
         a { color: #7fff7f; text-decoration: none; }
         a:hover { color: #aaffaa; }
 
-        /* sidebar */
+        /* Sidebar - Fixed width */
         #sidebar {
             background: #111;
-            width: 280px;
+            width: 15%;
             padding: 20px;
+            line-height: 1.6em;
             border-right: 1px solid #222;
             overflow-y: auto;
-        }
-        #sidebar h2 {
-            font-size: 1.2rem;
-            margin-top: 0;
-            border-bottom: 1px solid #222;
-            padding-bottom: 5px;
-        }
-        #sidebar ul {
-            list-style: none;
-            padding: 0;
-            margin: 10px 0;
-        }
-        #sidebar li {
-            margin-bottom: 8px;
+            flex-shrink: 0; /* Keeps sidebar from shrinking on zoom */
         }
 
-        /* page content */
+        /* Main Pane */
         #main {
             flex: 1;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
         }
 
-        header {
-            background: #111;
-            padding: 15px 25px;
-            border-bottom: 1px solid #222;
+        /* The Centered Containers */
+        header, main, footer {
+            width: 50%;
+            margin-left: auto;
+            margin-right: auto;
+            min-width: 320px; /* Essential: keeps it readable at high zoom */
         }
-        header h1 {
-            margin: 0;
-            font-size: 1.5rem;
+
+        header {
+            padding: 20px 0;
+            border-bottom: 1px solid #222;
         }
 
         main {
-            flex: 1;
-            padding: 25px;
-            overflow-y: auto;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            display: block;
+            padding-bottom: 40px;
+            text-align: justify;
+            line-height: 1.6;
         }
 
         footer {
-            padding: 15px 25px;
+            padding: 20px 0;
             border-top: 1px solid #222;
-            background: #111;
+            margin-top: auto;
+            opacity: 0.7;
+        }
+
+        /* Media Containment */
+        img {
+            max-width: 100%; /* Image can never be wider than the 50% container */
+            height: auto;    /* Maintains aspect ratio */
+            display: block;
+            margin: 20px auto;
+        }
+
+        /* new div for image and table captions */
+        cap {
+            display: block;
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+            opacity: 0.95;
+        }
+
+        /* apply border around multiline code blocks */
+        .codehilite {
+            border-radius: 10px;
+        }
+
+        /* target multiline code blocks ``` */
+        pre > code {
+            text-align: left;
+            display: inline-block;
+            max-width: 100%;
+            white-space: pre-wrap;    /* Wraps code so it doesn't push width */
+            word-wrap: break-word;
+            padding: 20px;
+        }
+
+        /* target inline code blocks ` */
+        :not(pre) > code {
+            background-color: #becdbc;
+            color: #001a00;
+            border-radius: 4px;
+            padding: 2px;
+        }
+
+        /* === Tables (Centered & Dark Gray) === */
+        table {
+            width: 100%;            /* Fills the 50% container */
+            max-width: 100%;
+            margin: 30px auto;      /* Centered within the main block */
+            border-collapse: collapse;
+            background: #1a1a1a;    /* Dark gray background */
+            border: 1px solid #333;
             font-size: 0.9rem;
         }
 
-        code, pre {
-            background: #111;
-            padding: 5px;
-            border: 1px solid #333;
-            border-radius: 4px;
-            display: block;
-            overflow-x: auto;
-        }
-
-        p code,
-        li code,
-        span code {
-            display: inline;
-            white-space: normal;
-        }
-
-        table {
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-
         th, td {
-            border: 1px solid #eee;
-            padding: 8px 12px;
+            border: 1px solid #333;
+            padding: 12px;
             text-align: left;
         }
 
         th {
-            background: #111;
-            color: #d0ffd0;
-            font-weight: bold;
+            background: #222;       /* Slightly lighter for header distinction */
+            color: #7fff7f;
         }
 
     </style>

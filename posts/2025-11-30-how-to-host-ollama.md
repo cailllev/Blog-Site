@@ -16,18 +16,29 @@ su - llm
 ```
 
 ### Firewalls
-Allow our WebUI docker container to talk to the ollama (systemd) service.<br>
-The following firewall works with a cloudflare ssh tunnel, webservers hosted on 9001-9009, and the above route.<br>
 USE AT YOUR OWN RISK, DO NOT ISOLATE YOURSELF FROM YOUR SERVER!
+```bash
+iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT  # allow established (outbound)
+iptables -A INPUT -p tcp -s 192.168.1.0/24 --dport 22 -j ACCEPT         # allow ssh from the same home-network
+iptables -A INPUT -p tcp -s 127.0.0.1/32 --dport 9001:9009 -j ACCEPT    # allow local cloudflare tunnel to local web-servers
+iptables -A INPUT -p tcp -s 172.16.0.0/12 --dport 11434 -j ACCEPT       # allow docker to ollama service
+iptables -A INPUT DROP
+iptables -L -n
 ```
+
+#### Result
+```text
 Chain INPUT (policy ACCEPT)
 target     prot opt source               destination         
 ACCEPT     0    --  0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
-ACCEPT     6    --  0.0.0.0/0            0.0.0.0/0            tcp dpts:9001:9009
-ACCEPT     6    --  0.0.0.0/0            0.0.0.0/0            tcp dpt:22
+ACCEPT     6    --  192.168.1.0/24       0.0.0.0/0            tcp dpt:22
+ACCEPT     6    --  127.0.0.1/32         0.0.0.0/0            tcp dpts:9001:9009
 ACCEPT     6    --  172.16.0.0/12        0.0.0.0/0            tcp dpt:11434
 DROP       0    --  0.0.0.0/0            0.0.0.0/0
 ```
+
+If everything looks correct, do `netfilter-persistent save` to persist reboots.
+
 
 ### Open-WebUI
 This is the frontend-server for the LLMs. It looks like the ChatGPT website, and will redirect your queries to the backend ollama server. 
@@ -35,7 +46,9 @@ This is the frontend-server for the LLMs. It looks like the ChatGPT website, and
 ```bash
 nano /opt/llm/docker-compose.yml
 ```
-```
+
+#### insert config
+```text
 services:
   open-webui:
     image: ghcr.io/open-webui/open-webui:main
@@ -48,6 +61,8 @@ services:
     volumes:
       - /opt/llm/open-webui:/app/backend/data
 ```
+
+#### start Open-WebUI
 ```bash
 docker compose up -d
 ```
@@ -56,14 +71,15 @@ docker compose up -d
 If you want to automatically shut down the Open-WebUI container when noone is visiting your website (i.e. your not active), see [Open-WebUI Auto Idle](https://github.com/cailllev/OpenWebUI-auto-idle).
 
 ### Ollama
-This is where the <s>magic</s> linear algebra happens. It takes your funny texts and predicts the next tokens.<br>
-The returned tokens will be visible in the Open-WebUI gui.
+This is where the <s>magic</s> linear algebra happens. It takes your funny texts and predicts the next tokens. The returned tokens will be visible in the Open-WebUI gui.
 
 ```bash
 apt install nvidia-driver-full # may depend on your GPU and kernel, please consult an LLM what works for you
 nano /etc/systemd/system/ollama.service
 ```
-```
+
+#### insert config
+```text
 [Unit]
 Description=Ollama Service
 After=network-online.target
@@ -80,6 +96,8 @@ Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 [Install]
 WantedBy=default.target
 ```
+
+#### start Ollama
 ```bash
 systemctl daemon-reload
 systemctl enable blog-site.service
@@ -95,3 +113,4 @@ ollama pull deepseek-r1:7b
 ...
 ```
 ![Deepseek-R1](/static/ollama/deepseek-r1.png)
+<cap>Deepseek is now running</cap>

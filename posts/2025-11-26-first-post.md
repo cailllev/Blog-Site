@@ -1,7 +1,5 @@
 # Mandatory First Post
-Finally, I took 1h to create a simple markdown blog website.<br>
-*Now there should be no excuses left to not document something.*<br>
-Anyhow, this is how you can replicate this if you want:
+Finally, I took 1h to create a simple markdown blog website. *Now there should be no excuses left to not document something.* Anyhow, this is how you can replicate this if you want:
 
 ## Setup
 ### install dependencies
@@ -16,7 +14,7 @@ mkdir wwwroot/posts
 mkdir wwwroot/templates
 ```
 
-```
+```text
 wwwroot/
 ├── app.py
 ├── posts/
@@ -28,12 +26,13 @@ wwwroot/
     └── post.html
 ```
 
-### setup service
+### create service configuration
 ```bash
 nano /etc/systemd/system/blog-site.service
 ```
 
-```
+#### configuration content
+```text
 [Unit]
 Description=My Blog-Site
 
@@ -49,6 +48,7 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
+### start service
 ```bash
 systemctl daemon-reload
 systemctl enable blog-site.service
@@ -72,12 +72,14 @@ The initial structure was <s>surely not</s> built by AI. Ain't no one got time t
 A simple blog website with code syntax highlighting, without any JavaScript, f*ck JavaScript.<br>
 Also, it is quite fast. I hate websites that take more than 100ms to load.
 
+### Python Example
 ```python3
 def test():
     print("abcd" + 123)
     return 1
 ```
 
+### C++ Example
 ```cpp
 int main(int argc, char[] argv) {
     int a = 2;
