@@ -36,6 +36,17 @@
             flex-shrink: 0; /* Keeps sidebar from shrinking on zoom */
         }
 
+        /* About Me - Fixed with */
+        #aboutme {
+            background: #111;
+            width: 15%;
+            padding: 20px;
+            line-height: 1.6em;
+            border-left: 1px solid #222;
+            overflow-y: auto;
+            flex-shrink: 0; /* Keeps sidebar from shrinking on zoom */
+        }
+
         /* Main Pane */
         #main {
             flex: 1;
@@ -46,7 +57,7 @@
 
         /* The Centered Containers */
         header, main, footer {
-            width: 50%;
+            width: 65%;
             margin-left: auto;
             margin-right: auto;
             min-width: 320px; /* Essential: keeps it readable at high zoom */
@@ -161,10 +172,16 @@
 
         <footer>
             <a href="/about">$ whoami</a> ·  
-            <a href="https://github.com/cailllev">GitHub</a>
+            <a href="https://github.com/evilele">GitHub</a>
             <br><br>
             <span style="opacity:0.5">Powered by Flask + Markdown2 — {{ now if now else "" }}</span>
         </footer>
+    </div>
+
+    <div id="aboutme">
+        <h2><a href="/about">About Me</a></h2>
+        <h3><a href="https://github.com/evilele">GitHub</h3>
+        <h3><a href="https://www.linkedin.com/in/levi-lee-cailleret/">LinkedIn</h3>
     </div>
 </body>
 </html>

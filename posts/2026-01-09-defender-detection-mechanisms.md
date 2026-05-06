@@ -58,13 +58,13 @@ The event log also includes the desiredaccess field, indicating what operation w
 
 | desired access | rights | observed time | subsequent actions | interpretation |
 |----------------|--------|---------------|--------------------|----------------|
-| 0x410          | ProcVmRead,ProcQueryInfo | after behaviour trigger | NtQueryInformationProcess InfoClass=Basic | extensive memory scan | 
-| 0x418          | ProcVmOperation,ProcVmRead,ProcQueryInfo | proc start | NtQueryInformationProcess InfoClass=Session,Basic | get loaded modules via LDR + pointer in ntdll |
-| 0x600          | ProcSetInfo,ProcQueryInfo | proc start | NtQueryInformationProcess InfoClass=Logging | get logging info |
+| 0x410          | ProcVmRead, ProcQueryInfo | after behaviour trigger | NtQueryInformationProcess InfoClass=Basic | extensive memory scan | 
+| 0x418          | ProcVmOperation, ProcVmRead, ProcQueryInfo | proc start | NtQueryInformationProcess InfoClass=Session,Basic | get loaded modules via LDR + pointer in ntdll |
+| 0x600          | ProcSetInfo, ProcQueryInfo | proc start | NtQueryInformationProcess InfoClass=Logging | get logging info |
 | 0x1000         | ProcQueryLimitedInfo | various | NtQueryInformationProcess  InfoClass=Session,ThreadPagePrio | cache lookup helper? |
-| 0x1010         | ProcVmRead,ProcQueryLimitedInfo | various | NtQueryInformationProcess InfoClass=Session,Basic | after file read of attack.exe? |
-| 0x1410         | ProcVmRead,ProcQuery(Limited)Info | various  | NtQueryInformationProcess InfoClass=Session,Basic,Wow64 | may get first module in LDR + pointer in ntdll |
-| 0x101000       | Sync,ProcQueryLimitedInfo | around scan request | NtQueryInformationProcess InfoClass=Session,ImageFileName | get exe name |
+| 0x1010         | ProcVmRead, ProcQueryLimitedInfo | various | NtQueryInformationProcess InfoClass=Session,Basic | after file read of attack.exe? |
+| 0x1410         | ProcVmRead, ProcQuery(Limited)Info | various  | NtQueryInformationProcess InfoClass=Session,Basic,Wow64 | may get first module in LDR + pointer in ntdll |
+| 0x101000       | Sync, ProcQueryLimitedInfo | around scan request | NtQueryInformationProcess InfoClass=Session,ImageFileName | get exe name |
 <cap>Derriving objective based on desired access on process opens</cap>
 
 ## Conclusion

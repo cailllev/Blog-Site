@@ -23,6 +23,11 @@ And because of the now “known bad” behaviour of LsassReader-(x).exe, the dec
 ![LsassReader deconditioning detected](/static/defender-temporal-detections/LsassReader-deconditioning-detected.png)
 <cap>After a triggered alert, all LsassReader-(x).exe variants are blocked.</cap>
 
+## Malware Development Pitfalls
+During the development and testing of the attacks, MDE sometimes stored metadata of the attacks after detection by static identifiers. This means all further tests with the same metadata, i.e. hashes, file names or signing info, see [here](https://learn.microsoft.com/en-us/defender-endpoint/cloud-protection-microsoft-antivirus-sample-submission#examples-of-metadata-sent-to-the-cloud-protection-service), were also detected. Depending on the "severity", the indicators may even be shared globally, as was the case with one LSASS dump attack. After detection on my personal VM with Defender installed, the same attack got detected on a VM in a completely different Azure Tenant with MDE installed.
+
+## THIS PART IS INACCURATE / OUTDATED
+
 ## Solution?
 Disable "send samples to Microsoft" and wait for about an hour after testing one variant, then the cached behavioural detection will be deleted again and Defender operates "as usual".
 
