@@ -12,7 +12,7 @@ The output of the EDRi framework is analysed and interpreted, given these four a
 * [Lsass dumper, no bypass](https://github.com/cailllev/EDR-Introspection/blob/d1c16c36e0e7a16cbd474df7331a3c7b5b6fec27/EDRi/dumps/events/MDE-vs-LsassReader-standard.csv)
 * [Lsass dumper, deconditioning](https://github.com/cailllev/EDR-Introspection/blob/d1c16c36e0e7a16cbd474df7331a3c7b5b6fec27/EDRi/dumps/events/MDE-vs-LsassReader-deconditioning.csv)
 
-The logs are also available as nicely formatted and pre-filtered Google sheets [here](https://drive.google.com/drive/folders/17SLAfnBD9_jk4VrKUqm-2ZQ_pcJcnw-Z?usp=sharing).
+The logs are also available as nicely formatted and pre-filtered Google sheets [here](https://drive.google.com/drive/folders/17SLAfnBD9_jk4VrKUqm-2ZQ_pcJcnw-Z).
 
 The goal of the EDRi framework is to observe what the EDR does, therefore 2 undetected and 2 detected attacks are analysed further.
 Try to guess which attacks are undetected, source code is [here](https://github.com/cailllev/EDR-Introspection/tree/master/attacks).
@@ -28,18 +28,17 @@ Try to guess which attacks are undetected, source code is [here](https://github.
 * The EDRi framework is [my master's thesis](https://github.com/cailllev/EDR-Introspection/blob/master/paper/EDR-Introspection.pdf), the analysis of the logs is a part of it and took substantial amount of time and nerves.
 * The table below is based on the analysis over all 4 EDRi logs, and the mechanisms are observed in all logs and in the same ordering.
 
-| Mechanism        | Event ID | Assumed Objective(s)                                                                                                                     |
-|------------------|----------|------------------------------------------------------------------------------------------------------------------------------------------|
-| stream scan      | 32       | This represents the heuristics step (engine), gets static information                                                                    |
-| MetaStore insert | 44       | Stores extracted identifiers from heuristics and emulations                                                                              |
-| MetaStore query  | 44       | Gets identifiers, used to decide what further analysis must be done                                                                      |
-| scan             | 1        | This represents the complete emulation step (engine)                                                                                     |
-| MOAC lookup      | 36       | Used to check if a file should be emulated or not                                                                                        |
-| UfsScanFile      | 30       | The actual emulation of the file                                                                                                         |
-| UfsScanProc      | 32       | The actual emulation (of a process?)                                                                                                     |
-| GetHashes        | 43       | Extracts identifiers (cryptographic hashes) after an emulation, sometimes for retrieval of info in heuristics phase (stream scan)        |
-| UfsScanProc      | 32       | Scans the loaded modules in a process                                                                                                    |
-| SpyNet report    | 43       | Bundles identifiers, submits them to Microsoft’s cloud to request a verdict (or simply Microsoft’s data collection of known executables) |
+| Mechanism        | Event ID | Assumed Objective(s)                                                                                    |
+|------------------|----------|---------------------------------------------------------------------------------------------------------|
+| stream scan      | 5        | This represents the heuristics step (engine), gets static information                                   |
+| MetaStore insert | 44       | Stores extracted identifiers from heuristics and emulations                                             |
+| MetaStore query  | 44       | Gets identifiers, used to decide what further analysis must be done                                     |
+| scan             | 1        | This represents the complete emulation step (engine)                                                    |
+| MOAC lookup      | 36       | Used to check if a file should be emulated or not                                                       |
+| UfsScanFile      | 30       | Emulating and scanning based on a file                                                                  |
+| UfsScanProc      | 32       | Scans the loaded modules in a process                                                                   |
+| GetHashes        | 43       | Extracts identifiers after an emulation, sometimes for heuristics phase (stream scan), in message field |
+| SpyNet report    | 43       | Bundles identifiers and requests a verdict (or just data collection), in message field                  |
 <cap>Identified mechanisms mapped to their objectives</cap>
 
 ### Data only in Threat-Intelligence
@@ -74,8 +73,8 @@ The event log also includes the desiredaccess field, indicating what operation w
 * Alternative name: **BITE** malware, Behavioural Intent Tracking via ETW
 
 ## Future Work
-* do [more attacks](https://github.com/cailllev/EDR-Introspection/tree/master?tab=readme-ov-file#create-own-attack)
+* do [more attacks](https://github.com/evilele/EDR-Introspection/tree/master?tab=readme-ov-file#create-own-attack)
 * analyse more logs
 * verify above findings
-* develop [EDRi Core](Link follows)
+* developed [iEDR](https://github.com/evilele/iEDR)
 * create **AURA** malware, test hypothesis
