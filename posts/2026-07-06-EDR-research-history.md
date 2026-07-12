@@ -3,18 +3,17 @@
 ## Primer
 Nowadays MDE (MsMpEng and co.) is understood to have 3 different analysis stages, see below. The understanding of MDE (and the stages) evolved and changed slightly over time, at least what was publicly and widely known (i.e. by me).
 
-| stage        | analysis techniques | data/format of known bad  | supporting tools                           |
-|--------------|---------------------|---------------------------|--------------------------------------------|
-| store time   | static + emulation  | yara rules and lua script | defender2yara, defender_overview, etc.     |
-| startup time | + loaded images     | *to be found*             | Defrev, EDR-Introspection, Detonator, etc. |
-| runtime      | + memory scans      | *to be found*             | Defrev, EDR-Introspection, Detonator, etc. |
+| attack stage | analysis techniques | data/format of known bad   | supporting tools                           |
+|--------------|---------------------|----------------------------|--------------------------------------------|
+| store time   | static + emulation  | yara rules and lua scripts | defender2yara, defender_overview, etc.     |
+| startup time | + loaded images     | *to be found*              | Defrev, EDR-Introspection, Detonator, etc. |
+| runtime      | + memory scans      | *to be found*              | Defrev, EDR-Introspection, Detonator, etc. |
 
 As displayed, the store time analysis techniques are well known, together with the data and format of "known bad" (i.e. yara rules), thus bypassing the store time can be trivial. The startup time and runtime checks of MDE can be observed by some tools, however the data plus format of "known bad" is somewhat unknown.
 
 ## Analysis History
 
-*see also https://blog.deeb.ch/defender-reversing-history*
-This is a short overview of (in my opinion) relevant EDR analysis tools. Developing your own malware loader and not documenting new findings with regards to EDR internals does not count.
+For a better summary and nicer text see [Dobin's post](https://blog.deeb.ch/defender-reversing-history). This is a short overview of (in my opinion) relevant MDE analysis tools. Developing your own malware loader and not documenting new findings with regards to EDR internals does not count.
 
 | #  | year | testing type                       | targeted EDR mechanism             | tool name                                                                                        | author            |
 |----|------|------------------------------------|------------------------------------|--------------------------------------------------------------------------------------------------|-------------------|
@@ -35,13 +34,13 @@ This is a short overview of (in my opinion) relevant EDR analysis tools. Develop
 
 ## Interpretation
 
-The tools can be split into 3 "phases", each of which describe the (puplicly) available anti-EDR knowledge at that point in time.
+The tools can be split into 3 "phases", each of which describe the (publicly) available anti-EDR knowledge at that point in time.
 
 ### Internal static Analysis
 
 First are "internal" analysis tools, rows 1-3, extracting some part of Defender and attacking and understanding it in isolation. Understanding these parts helped us understand how the store time analysis (static and emulation)
 
-### Observation of dynamic MDE
+### Observation of running MDE
 
 From 2021 up until 2025, rows 4-8, a new paradigm of analysis was developed, as in "Observing how the actual MDE behaves in light of malware".[Detonator](https://github.com/dobin/Detonator) leverages insights from [RedEdr](https://github.com/dobin/RedEdr) to further enhance visibility and thus insights into analysis logic of MDE.
 
@@ -55,4 +54,4 @@ In 2026 some attempts are made to understand MDE's logic by reversing MsMpEng's 
 
 ## Conclusion
 
-While the scan triggers might be hard-**code**d (do a scan of loaded images at startup, do a memscan after CreateRemoteThread, see [Reversing Defender](https://blog.deeb.ch/posts/reversing-defender-opus/)), the "known bad" might be stored in a database. Similar to defender2yara, these dynamic "known bad" IOCs could be extracted and bypassing dynamic (runtime) scans could be as easy as bypassing yara scans.
+While the scan triggers might be hard-**code**d (do a scan of loaded images at startup, do a memscan after CreateRemoteThread, see [Reversing Defender](https://blog.deeb.ch/posts/reversing-defender-opus/)), the "known bad" might be stored as **data**. Similar to defender2yara, these dynamic, runtime "known bad" IOCs could be extracted and bypassing dynamic (runtime) scans could be as easy as bypassing yara scans.
